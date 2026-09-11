@@ -1,0 +1,21 @@
+app:
+  nome: desafio-03-pipeline-recomendacao
+  ambiente: desenvolvimento
+
+dados:
+  catalogo: dados/brutos/catalogo.csv
+  interacoes: dados/brutos/interacoes.json
+  comentarios: dados/brutos/comentarios.json
+  resumo_ingestao: dados/processados/resumo_ingestao.json
+
+postgres:
+  schema: public
+
+mongodb:
+  colecao_comentarios: comentarios
+
+embeddings:
+  modelo: a_definir
+
+recomendacao:
+  limite: 10
