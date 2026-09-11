@@ -608,7 +608,6 @@ Atividades:
 ### `feature/estudante-2-mongodb-embeddings-recomendacoes`
 
 **Responsável:** Gabriel Moreira Branco  
-**GitHub:** `@Gabriel-M-Branco`
 
 Atividades:
 
