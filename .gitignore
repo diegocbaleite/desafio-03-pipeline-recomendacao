@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Ambiente
+.env
+
+# IDE/SO
+.vscode/
+.idea/
+.DS_Store
+
+# Logs e saídas locais
+logs/*.log
+dados/processados/*
+!dados/processados/.gitkeep
+
+# Cache/modelos
+.cache/
