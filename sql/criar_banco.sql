@@ -62,3 +62,54 @@ CREATE TABLE IF NOT EXISTS recomendacoes (
 CREATE INDEX IF NOT EXISTS idx_interacoes_usuario ON interacoes(usuario_id);
 CREATE INDEX IF NOT EXISTS idx_interacoes_conteudo ON interacoes(conteudo_id);
 CREATE INDEX IF NOT EXISTS idx_conteudos_categoria ON conteudos(categoria_id);
+
+-- KPI 2 - Visualizações por Categoria
+CREATE OR REPLACE VIEW vw_content_views_by_category AS
+SELECT
+    i.data_hora,
+    cat.nome AS categoria,
+    i.conteudo_id,
+    i.usuario_id
+FROM interacoes i
+JOIN conteudos c
+    ON i.conteudo_id = c.conteudo_id
+JOIN categorias cat
+    ON c.categoria_id = cat.categoria_id
+WHERE i.tipo_interacao = 'visualização';
+
+-- KPI 3 - Taxa de Conclusão de Conteúdos por Categoria
+CREATE OR REPLACE VIEW vw_content_completion_by_category AS
+SELECT
+    i.data_hora,
+    cat.nome AS categoria,
+    i.usuario_id,
+    i.conteudo_id,
+    i.tipo_interacao
+FROM interacoes i
+JOIN conteudos c
+    ON i.conteudo_id = c.conteudo_id
+JOIN categorias cat
+    ON c.categoria_id = cat.categoria_id
+WHERE i.tipo_interacao IN ('início', 'conclusão');
+
+
+-- KPI 4 - Taxa de Conversão de Recomendações
+CREATE OR REPLACE VIEW vw_recommendation_conversion AS
+SELECT
+    r.recomendacao_id,
+    r.usuario_id,
+    r.conteudo_id,
+
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM interacoes i
+            WHERE i.usuario_id = r.usuario_id
+                AND i.conteudo_id = r.conteudo_id
+			    AND i.data_hora > r.data_geracao
+        )
+        THEN 1
+        ELSE 0
+    END AS conversao
+
+FROM recomendacoes r;
