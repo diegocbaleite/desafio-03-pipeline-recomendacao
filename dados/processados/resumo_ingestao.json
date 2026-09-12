@@ -1,0 +1,52 @@
+{
+  "fontes": {
+    "catalogo": {
+      "lidos": 1000,
+      "válidos": 1000,
+      "inválidos": 0,
+      "incompletos": 0,
+      "duplicados": 0,
+      "corrigidos": 1000
+    },
+    "interacoes": {
+      "lidos": 1000,
+      "válidos": 1000,
+      "inválidos": 0,
+      "incompletos": 0,
+      "duplicados": 0,
+      "corrigidos": 1000
+    },
+    "comentarios": {
+      "lidos": 1000,
+      "válidos": 1000,
+      "inválidos": 0,
+      "incompletos": 0,
+      "duplicados": 0,
+      "corrigidos": 837
+    }
+  },
+  "detalhamento_correcoes": {
+    "catalogo": {
+      "descricao": "Conversão de tipos (str para int em IDs e carga horária) e padronização de maiúsculas/minúsculas em categorias",
+      "total_corrigidos": 1000
+    },
+    "interacoes": {
+      "descricao": "Adequação dos campos oficiais (tempo_consumido -> tempo_consumido_min, avaliacao_atribuida -> avaliacao) e conversão para float",
+      "total_corrigidos": 1000
+    },
+    "comentarios": {
+      "descricao": "Padronização das tags (remoção de duplicatas, conversão para minúsculas e ordenação alfabética)",
+      "total_corrigidos": 837
+    }
+  },
+  "carregados_banco": {
+    "postgresql": 0,
+    "mongodb": 0
+  },
+  "tempos_etapas_segundos": {
+    "leitura": 0.0089,
+    "tratamento_validacao": 0.0551,
+    "gravacao_saidas": 0.1451
+  },
+  "tempo_total_segundos": 0.2108
+}
