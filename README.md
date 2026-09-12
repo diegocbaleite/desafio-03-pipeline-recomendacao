@@ -461,14 +461,14 @@ desafio-03-pipeline-recomendacao/
 ├── dashboard/
 │   ├── dashboard_export.zip
 │   ├── sync_database.py
-│   ├── README.md
 │   └── evidencias/
 │       └── README.md
 │
 ├── documentacao/
-│   ├── estudante-1.md
-│   ├── estudante-2.md
-│   ├── estudante-3.md
+│   ├── modelo_de_dados.pdf
+│   ├── arquitetura.pdf
+│   ├── especificacao_tecnica.md
+│   ├── kpis.md
 │   ├── uso_da_ia.md
 │   └── README.md
 │
@@ -676,7 +676,7 @@ O comando executará o fluxo unificado de ponta a ponta:
 
 A suíte de testes é organizada de forma modular, permitindo a execução completa do sistema ou a validação pontual por componente:
 
-### Execução Completa (53 testes):
+### Execução Completa (59 testes):
 ```bash
 python -m pytest -v
 ```
@@ -700,9 +700,88 @@ python -m pytest tests/test_embeddings.py -v
 
 # Motor de Recomendação (RF10, RF11)
 python -m pytest tests/test_recomendacao.py -v
+
+# Métricas, KPIs e Integridade do Dashboard Superset (RF12, RF13)
+python -m pytest tests/test_dashboard_metricas.py -v
 ```
 
-> **Status:** 53 testes automatizados cobrindo 100% dos requisitos funcionais implementados (RF01 a RF11), todos aprovados com sucesso.
+> **Status:** 59 testes automatizados cobrindo 100% dos requisitos funcionais implementados (RF01 a RF13), todos aprovados com sucesso.
+
+---
+
+## Visualização no Apache Superset — RF13
+
+O projeto inclui o **Apache Superset** totalmente integrado ao pipeline via Docker Compose para visualização e acompanhamento de métricas operacionais e estratégicas (KPIs).
+
+### 1. Acesso ao Apache Superset
+
+Após inicializar os contêineres (`docker compose up -d`) e executar o pipeline (`python -m src.main`):
+
+1. Abra o navegador e acesse:
+   ```text
+   http://localhost:8088
+   ```
+2. Realize o login com as credenciais padrão configuradas no `.env`:
+   - **Username:** `admin`
+   - **Password:** `admin`
+
+---
+
+### 2. Importação e Sincronização do Dashboard
+
+#### 2.1 Sincronização Automática (Zero Configuração)
+O script `dashboard/sync_database.py` é executado **automaticamente durante a inicialização do contêiner do Superset**. Ele realiza:
+1. Extração dinâmica do UUID do banco a partir do pacote `dashboard/dashboard_export.zip`;
+2. Criação e sincronização da conexão com o PostgreSQL utilizando as credenciais definidas no `.env`;
+3. Importação do painel analítico completo via CLI (`superset import-dashboards`);
+4. Publicação automática do painel (`published: true`).
+
+Ao acessar o menu **Dashboards**, o painel **"Dashboard - Desafio 3"** já estará publicado, conectado ao PostgreSQL e exibindo os dados consolidados.
+
+#### 2.2 Reimportação Manual via Interface Web (Opcional)
+Caso deseje reimportar o painel manualmente através da interface web do Superset:
+1. No menu superior direito, clique em **Settings (ícone de engrenagem) → Import Dashboards**;
+2. Selecione o arquivo `dashboard/dashboard_export.zip`;
+3. **Sobre a solicitação de senha do banco:**  
+   Por diretriz de segurança de arquitetura do Superset, senhas de banco de dados nunca são exportadas em texto claro dentro de arquivos ZIP (*aparecendo mascaradas como `XXXXXXXXXX`*). No campo de senha do banco **Other**, digite a senha do PostgreSQL configurada no seu `.env` (`POSTGRES_PASSWORD`, por exemplo `1234` ou `postgres`);
+4. Clique em **Import**.
+
+---
+
+### 3. Estrutura dos Componentes do Dashboard
+
+O painel reúne todos os componentes analíticos obrigatórios definidos pelo edital:
+
+```text
+Dashboard — Desafio 3
+│
+├── Filtros Nativos (Interativos)
+│   ├── Filtro de Período (Time Range)
+│   └── Filtro de Categoria (Dropdown / Select)
+│
+├── Cartões Executivos (Métricas Operacionais)
+│   ├── Total de Usuários Registrados (Big Number)
+│   ├── Total de Conteúdos Cadastrados (Big Number)
+│   └── Média de Tempo por Interação (Big Number)
+│
+└── Indicadores de Tomada de Decisão (KPIs - RF12)
+    ├── KPI 1: Usuários Ativos no Período (Big Number)
+    ├── KPI 2: Visualizações por Categoria ao Longo do Tempo (Linhas / Série Temporal)
+    ├── KPI 3: Taxa de Conclusão por Categoria (Barras Comparativas)
+    └── KPI 4: Taxa de Conversão das Recomendações (Big Number)
+```
+
+---
+
+### 4. Perguntas de Negócio Respondidas pelo Dashboard
+
+1. **Pergunta 1 (Priorização e Alocação Estratégica de Conteúdo):**  
+   *Quais categorias temáticas apresentam maior interesse inicial (visualizações) versus maior taxa de conclusão efetiva, indicando quais cursos devem receber novos investimentos de produção ou reformulação?*  
+   - **Como responder:** Compare o gráfico de linhas temporal (*Visualizações por Categoria*) com o gráfico de barras (*Taxa de Conclusão por Categoria*).
+
+2. **Pergunta 2 (Efetividade do Motor de Inteligência Artificial):**  
+   *Qual é o percentual de recomendações geradas pelo motor vetorial que efetivamente foram convertidas em interações reais pelos alunos após a recomendação?*  
+   - **Como responder:** Observe o cartão executivo **Taxa de Conversão das Recomendações** e aplique o filtro de período para avaliar a evolução da assertividade das sugestões.
 
 ---
 
@@ -716,8 +795,6 @@ Branch estável e utilizada para integração do projeto.
 
 ### `feature/estudante-1-ingestao-postgresql`
 
-**Responsável:** Diego Assunção Leite
-
 Atividades:
 
 - Ingestão;
@@ -726,8 +803,6 @@ Atividades:
 - PostgreSQL.
 
 ### `feature/estudante-2-mongodb-embeddings-recomendacoes`
-
-**Responsável:** Gabriel Moreira Branco  
 
 Atividades:
 
@@ -738,8 +813,6 @@ Atividades:
 - Motor de recomendação.
 
 ### `feature/estudante-3-metricas-superset`
-
-**Responsável:** Gabriel André de Siqueira Nonato
 
 Atividades:
 

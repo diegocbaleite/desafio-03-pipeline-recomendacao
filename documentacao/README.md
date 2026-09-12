@@ -1,9 +1,9 @@
 # Documentação Técnica do Projeto
 
-Documentos técnicos do Desafio Prático 1 organizados por estudante e entregáveis oficiais:
+Documentos técnicos e artefatos oficiais do **Desafio Prático 1 (FIC_DEV)**:
 
-- [estudante-1.md](estudante-1.md): Ingestão, validação, tratamento de qualidade e persistência inicial no PostgreSQL (Estudante 1 — Diego Assunção).
-- [estudante-2.md](estudante-2.md): Persistência no MongoDB, embeddings vetoriais com pgvector, busca semântica e motor de recomendação (Estudante 2 — Gabriel Moreira Branco).
-- [estudante-3.md](estudante-3.md): Métricas, consultas e dashboard no Superset (Estudante 3 — Gabriel André de Siqueira Nonato).
-- [modelo_de_dados.md](modelo_de_dados.md): Modelo lógico e relacional do PostgreSQL, cardinalidades, regras de integridade e integração lógica com o MongoDB.
-- [uso_da_ia.md](uso_da_ia.md): Registro oficial do uso de Inteligência Artificial conforme a Seção 10 do enunciado do desafio.
+- [especificacao_tecnica.md](especificacao_tecnica.md): Especificação técnica completa de arquitetura, tratamento de dados, modelagem, IA e motor de recomendação.
+- [modelo_de_dados.pdf](modelo_de_dados.pdf): Modelo conceitual, lógico e relacional do banco de dados (entregável obrigatório oficial).
+- [arquitetura.pdf](arquitetura.pdf): Diagrama arquitetural em camadas do pipeline de dados (entregável oficial).
+- [kpis.md](kpis.md): Especificação formal dos 4 KPIs, views SQL e perguntas de negócio (RF12 e RF13).
+- [uso_da_ia.md](uso_da_ia.md): Registro oficial do uso consciente de Inteligência Artificial e governança (Seção 10 do edital).
