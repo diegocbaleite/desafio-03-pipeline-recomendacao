@@ -108,7 +108,11 @@ def main() -> None:
         inicio_emb = perf_counter()
         logger.info("")
         logger.info(">>> [4/5] Gerando embeddings vetoriais com SentenceTransformers (RF08)...")
-        res_emb = gerar_e_salvar_embeddings(config, catalogo=catalogo, logger=logger)
+        try:
+            res_emb = gerar_e_salvar_embeddings(config, catalogo=catalogo, logger=logger)
+        except Exception:
+            logger.exception("Falha na geração de embeddings (RF08)")
+            raise
         logger.info("Embeddings calculados: %d conteúdos | tempo=%.4fs", res_emb["processados"], perf_counter() - inicio_emb)
 
         # Atualiza pgvector se PostgreSQL estiver ativo
