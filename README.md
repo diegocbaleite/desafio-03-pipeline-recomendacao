@@ -459,14 +459,16 @@ desafio-03-pipeline-recomendacao/
 │       └── resumo_ingestao.json
 │
 ├── dashboard/
+│   ├── dashboard_export.zip
+│   ├── sync_database.py
+│   ├── README.md
 │   └── evidencias/
+│       └── README.md
 │
 ├── documentacao/
-│   ├── arquitetura.pdf
-│   ├── modelo_de_dados.pdf
 │   ├── estudante-1.md
 │   ├── estudante-2.md
-│   ├── kpis.md
+│   ├── estudante-3.md
 │   ├── uso_da_ia.md
 │   └── README.md
 │
@@ -507,13 +509,14 @@ desafio-03-pipeline-recomendacao/
 │
 ├── tests/
 │   ├── conftest.py
-│   ├── test_ingestao.py
-│   ├── test_validacao.py
-│   ├── test_postgres.py
-│   ├── test_mongo.py
+│   ├── test_dashboard_metricas.py
 │   ├── test_embeddings.py
+│   ├── test_ingestao.py
+│   ├── test_mongo.py
+│   ├── test_postgres.py
 │   ├── test_recomendacao.py
-│   └── test_estudante_2.py
+│   ├── test_regras_negocio.py
+│   └── test_validacao.py
 │
 ├── docker-compose.yml
 ├── .env.example
