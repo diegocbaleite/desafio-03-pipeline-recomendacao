@@ -1,10 +1,6 @@
 # Pipeline de Recomendação e Dashboard de Conteúdos Educacionais
 
-Sistema desenvolvido em Python para ingestão, validação, tratamento, armazenamento, busca semântica, recomendação e análise de dados de uma plataforma fictícia de conteúdos educacionais.
-
-O projeto recebe dados provenientes de arquivos CSV e JSON, realiza limpeza e padronização dos registros, armazena dados estruturados no PostgreSQL e dados semiestruturados no MongoDB, gera embeddings armazenados com pgvector, realiza buscas por similaridade semântica, produz recomendações personalizadas e disponibiliza métricas e KPIs em um dashboard no Apache Superset.
-
----
+Projeto do **Desafio Prático 1 — Fundamentos de Dados para IA (FIC_DEV)**. A solução implementa um pipeline reproduzível de ponta a ponta, desde a ingestão de arquivos CSV/JSON até persistência em PostgreSQL e MongoDB, embeddings com pgvector, busca semântica, recomendações e dashboard no Apache Superset.
 
 ## Identificação
 
@@ -17,72 +13,48 @@ O projeto recebe dados provenientes de arquivos CSV e JSON, realiza limpeza e pa
 **Curso/Módulo:** FIC_DEV — Programador de Sistemas com IA  
 **Instituição:** SECITECI / Escola Técnica Estadual de Cuiabá  
 **Turma:** Vespertino  
-**Modalidade:** Equipe de 03 estudantes  
+**Modalidade:** Equipe de 3 estudantes  
 **Versão:** 1.0 — 2026
 
----
+## Status da entrega
+
+A branch **`main`** é a versão final integrada do projeto. Ela reúne as entregas de ingestão/PostgreSQL, MongoDB/embeddings/recomendações, métricas/Superset e os ajustes finais de documentação e observabilidade.
 
 ## Objetivo
 
-Desenvolver um pipeline de dados modular e reproduzível em Python capaz de:
+O pipeline foi desenvolvido para:
 
-- Ler arquivos CSV e JSON configurados externamente;
-- Validar registros provenientes de diferentes fontes;
-- Classificar registros como válidos, inválidos, incompletos ou duplicados;
-- Registrar os motivos de rejeição dos registros;
-- Realizar limpeza, tratamento e padronização dos dados;
-- Preservar os arquivos originais de entrada;
-- Gerar arquivos contendo os dados processados;
-- Produzir um resumo da ingestão em formato JSON;
-- Armazenar dados estruturados no PostgreSQL;
-- Armazenar comentários e avaliações no MongoDB;
-- Gerar embeddings dos conteúdos educacionais;
-- Armazenar vetores utilizando PostgreSQL e pgvector;
-- Realizar busca por similaridade semântica;
-- Gerar recomendações personalizadas;
-- Persistir as recomendações no PostgreSQL;
-- Produzir métricas e KPIs;
-- Disponibilizar dados consolidados para o Apache Superset;
-- Construir um dashboard com indicadores e filtros interativos;
-- Registrar logs das principais etapas do processamento.
+- ler as três fontes de dados obrigatórias;
+- validar e classificar registros;
+- normalizar e preservar os dados de origem;
+- salvar dados processados e resumo de ingestão;
+- persistir dados estruturados no PostgreSQL;
+- persistir comentários e avaliações no MongoDB;
+- gerar e reaproveitar embeddings dos conteúdos;
+- armazenar vetores no PostgreSQL com pgvector;
+- executar buscas por similaridade semântica;
+- gerar recomendações personalizadas;
+- persistir recomendações;
+- disponibilizar métricas e KPIs para o Superset;
+- registrar logs e falhas das principais etapas.
 
 ---
 
-## Mapeamento da Implementação dos Requisitos Funcionais
+# Requisitos Funcionais — RF01 a RF14
 
-Abaixo está o detalhamento técnico dos **Requisitos Funcionais RF01 a RF14** definidos para o desafio.
+## RF01 — Inicialização e configuração
 
-### RF01 — Inicialização e Configuração
-
-**Requisito:**  
-O sistema deverá ser executado pelo comando:
+Execução oficial:
 
 ```bash
 python -m src.main
 ```
 
-Também deverá utilizar arquivo de configuração em JSON ou YAML e manter credenciais separadas do código-fonte.
+A configuração funcional fica em `config/config.yaml`. Credenciais e parâmetros de conexão ficam em variáveis de ambiente carregadas pelo arquivo local `.env`, que não é versionado.
 
-**Implementação:**
+## RF02 — Leitura das fontes
 
-- O ponto de entrada da aplicação está localizado em `src/main.py`;
-- As configurações do projeto são centralizadas em `config/config.yaml`;
-- As credenciais são carregadas através de variáveis de ambiente;
-- O arquivo `.env` não é versionado;
-- O arquivo `.env.example` é disponibilizado como modelo de configuração.
-
-### RF02 — Leitura das Fontes de Dados
-
-**Requisito:**  
-O sistema deverá ler no mínimo:
-
-- Um arquivo CSV contendo o catálogo de conteúdos;
-- Um arquivo JSON contendo as interações dos usuários;
-- Um arquivo JSON contendo comentários ou avaliações.
-
-**Implementação:**
-
-Os arquivos de entrada são mantidos em:
+Fontes obrigatórias:
 
 ```text
 dados/brutos/
@@ -91,67 +63,24 @@ dados/brutos/
 └── comentarios.json
 ```
 
-O módulo de ingestão é responsável por realizar a leitura das fontes e informar a quantidade de registros encontrados.
+O pipeline registra nos logs o caminho das fontes e a quantidade de registros encontrados.
 
-### RF03 — Validação dos Dados
+## RF03 — Validação dos dados
 
-**Requisito:**  
-Cada registro deverá ser classificado como:
+Os registros são classificados como:
 
 - válido;
 - inválido;
 - incompleto;
 - duplicado.
 
-**Implementação:**
+As validações contemplam campos obrigatórios, identificadores, datas, domínios categóricos, avaliações, valores numéricos, referências inexistentes e duplicidades. Registros rejeitados recebem classificação e motivo.
 
-O módulo de validação verifica:
+## RF04 — Tratamento e padronização
 
-- Campos obrigatórios;
-- Identificadores;
-- Datas;
-- Valores categóricos;
-- Intervalo das avaliações;
-- Valores numéricos incompatíveis;
-- Referências a usuários inexistentes;
-- Referências a conteúdos inexistentes;
-- Duplicidades.
+O processamento normaliza espaços, categorias, tipos, níveis, datas, valores numéricos e tags. Os arquivos de `dados/brutos/` são preservados e as saídas são geradas em `dados/processados/`.
 
-Os registros rejeitados mantêm o motivo de sua classificação para auditoria.
-
-### RF04 — Tratamento e Padronização
-
-**Requisito:**  
-O sistema deverá limpar, padronizar e tratar os registros antes do armazenamento.
-
-**Implementação:**
-
-O processamento realiza:
-
-- Remoção de espaços desnecessários;
-- Padronização de letras maiúsculas e minúsculas;
-- Padronização de categorias;
-- Padronização dos tipos de conteúdo;
-- Padronização dos níveis;
-- Conversão de datas;
-- Conversão de valores numéricos;
-- Tratamento de valores ausentes;
-- Identificação e remoção de duplicidades.
-
-Os arquivos originais são preservados em `dados/brutos/`.
-
-Os resultados tratados são enviados para:
-
-```text
-dados/processados/
-```
-
-### RF05 — Resumo da Ingestão
-
-**Requisito:**  
-Ao final do processamento deverá ser produzido um resumo em JSON.
-
-**Implementação:**
+## RF05 — Resumo da ingestão
 
 O arquivo:
 
@@ -159,43 +88,21 @@ O arquivo:
 dados/processados/resumo_ingestao.json
 ```
 
-registra informações como:
+registra quantidades lidas, válidas, inválidas, incompletas, duplicadas, corrigidas, cargas nos bancos e tempos de processamento.
 
-- Total de registros lidos;
-- Registros válidos;
-- Registros inválidos;
-- Registros incompletos;
-- Registros duplicados;
-- Registros corrigidos;
-- Registros carregados nos bancos;
-- Tempo total de processamento.
+## RF06 — PostgreSQL
 
-### RF06 — Persistência no PostgreSQL
-
-**Requisito:**  
-Os dados estruturados deverão ser armazenados no PostgreSQL.
-
-**Implementação:**
-
-O modelo relacional possui entidades equivalentes a:
+O modelo relacional possui as entidades:
 
 ```text
-usuario
-categoria
-conteudo
-interacao
-recomendacao
+usuarios
+categorias
+conteudos
+interacoes
+recomendacoes
 ```
 
-São utilizadas:
-
-- Chaves primárias;
-- Chaves estrangeiras;
-- Restrições de integridade;
-- Restrições contra duplicidade;
-- Transações durante a carga.
-
-Os scripts estão localizados em:
+São utilizadas PKs, FKs, constraints, transações e `ON CONFLICT` para integridade e reexecução segura. Os scripts ficam em:
 
 ```text
 sql/
@@ -203,87 +110,49 @@ sql/
 └── consultas.sql
 ```
 
-### RF07 — Persistência no MongoDB
+## RF07 — MongoDB
 
-**Requisito:**  
-Comentários, avaliações e outros dados semiestruturados deverão ser armazenados no MongoDB.
+**Implementação:** comentários e avaliações são carregados no MongoDB com `usuario_id`, `conteudo_id`, categoria, avaliação, comentário, tags e data.
 
-**Implementação prevista:**
+A aplicação e o arquivo `mongodb/consultas.js` demonstram:
 
-A coleção deverá permitir:
+- inserção de documentos;
+- consulta por conteúdo;
+- busca por tag;
+- filtro por nota;
+- agregação por categoria.
 
-- Inserir documentos;
-- Consultar comentários por conteúdo;
-- Pesquisar documentos por tag;
-- Filtrar avaliações por nota;
-- Agregar comentários ou avaliações por categoria.
+A categoria é desnormalizada no documento para permitir agregações diretas no MongoDB.
 
-As consultas utilizadas serão registradas em:
+## RF08 — Embeddings e pgvector
 
-```text
-mongodb/consultas.js
-```
-
-### RF08 — Geração e Armazenamento de Embeddings
-
-**Requisito:**  
-Cada conteúdo válido deverá possuir uma representação vetorial.
-
-**Implementação prevista:**
-
-O texto utilizado para gerar cada embedding será formado por:
+**Implementação:** cada conteúdo válido recebe uma representação vetorial gerada com:
 
 ```text
-Título + Descrição
+sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 ```
 
-Os vetores serão:
+O texto inclui título e descrição, com metadados contextuais do conteúdo. Os vetores possuem 384 dimensões, são associados ao `conteudo_id`, persistidos em `dados/processados/embeddings.json` e enviados ao PostgreSQL/pgvector.
 
-- Associados ao `conteudo_id`;
-- Gerados somente para conteúdos válidos;
-- Armazenados no PostgreSQL;
-- Persistidos utilizando a extensão `pgvector`;
-- Protegidos contra geração duplicada.
+Embeddings válidos já persistidos são reaproveitados em novas execuções. Apenas conteúdos ausentes ou com vetor inválido são gerados novamente.
 
-O modelo de embeddings utilizado deverá ser registrado na documentação.
+## RF09 — Busca semântica
 
-### RF09 — Busca por Similaridade Semântica
+A busca recebe texto em linguagem natural e retorna:
 
-**Requisito:**  
-O sistema deverá receber uma consulta em linguagem natural e recuperar os conteúdos semanticamente mais semelhantes.
+- posição;
+- `conteudo_id`;
+- título;
+- categoria;
+- tipo;
+- similaridade;
+- distância.
 
-**Implementação prevista:**
+O projeto demonstra três consultas semânticas diferentes em `src/recomendacao/busca.py`.
 
-Cada resultado deverá apresentar:
+## RF10 — Recomendações
 
-- Posição;
-- Identificador do conteúdo;
-- Título;
-- Categoria;
-- Tipo;
-- Similaridade ou distância.
-
-Exemplo:
-
-```text
-Quero aprender os fundamentos de banco de dados para inteligência artificial.
-```
-
-A equipe deverá demonstrar pelo menos três consultas semânticas diferentes.
-
-### RF10 — Geração de Recomendações
-
-**Requisito:**  
-O sistema deverá gerar recomendações considerando o comportamento do usuário.
-
-Serão considerados:
-
-- Conteúdos visualizados;
-- Conteúdos curtidos;
-- Avaliações positivas;
-- Conteúdos já concluídos.
-
-A fórmula definida para o desafio é:
+A pontuação segue a fórmula definida no desafio:
 
 ```text
 Pontuação = ((Ivis + Icur) / 2) × 100 × Iconc
@@ -291,233 +160,122 @@ Pontuação = ((Ivis + Icur) / 2) × 100 × Iconc
 
 Onde:
 
-- **Ivis (Índice de Visualizações — 0.0 a 1.0):** Calculado por **Similaridade Vetorial Semântica via pgvector / Embeddings Ponderados**, gerando um perfil latente do usuário (`user_embedding`) ponderado pelo tempo consumido e percentual de conclusão, comparado via cosseno contra os vetores indexados no banco vetorial.
-- **Icur (Índice de Curtidas e Avaliações — 0.0 a 1.0):** Representa curtidas explícitas ou avaliações positivas com nota igual ou superior a 4.0 na mesma categoria.
-- **Iconc (Índice de Remoção de Concluídos):**
-  - `0` = conteúdo já concluído (anula a pontuação);
-  - `1` = conteúdo ainda não concluído.
+- `Ivis`: afinidade derivada do histórico de visualizações/consumo e similaridade vetorial;
+- `Icur`: interesse explícito por curtidas ou avaliações positivas;
+- `Iconc`: filtro binário que remove conteúdos concluídos.
 
-**Regras de Classificação Oficial (Tipo de Recomendação):**
+Classificação:
 
-- **Positivo (Pontuação >= 70.0):** Forte afinidade;
-- **Estável (40.0 < Pontuação < 70.0):** Afinidade moderada / interesse parcial;
-- **Negativo (Pontuação <= 40.0 ou Iconc = 0):** Baixo interesse ou já concluído (**descartado da lista de sugestões**).
+- Positivo: pontuação >= 70;
+- Estável: 40 < pontuação < 70;
+- Negativo: pontuação <= 40 ou `Iconc = 0`.
 
-### RF11 — Persistência das Recomendações
+Recomendações negativas são descartadas da lista de sugestões.
 
-**Requisito:**  
-As recomendações geradas deverão ser armazenadas no PostgreSQL.
+## RF11 — Persistência das recomendações
 
-Cada recomendação possui:
+Cada recomendação persistida contém usuário, conteúdo, pontuação, posição, status e data de geração.
 
-- Identificador do usuário (`usuario_id`);
-- Identificador do conteúdo (`conteudo_id`);
-- Pontuação final (`pontuacao`);
-- Posição no resultado (`posicao`);
-- Status da recomendação (`status`: Positivo ou Estável);
-- Data e hora da geração (`data_geracao`).
+O número máximo de sugestões por usuário é **configurável** em:
 
-**Persistência Integral:** O pipeline armazena todas as sugestões válidas geradas para cada usuário ordenadas por pontuação decrescente ($1 \dots N$), sem truncamento artificial, persistindo-as na tabela `recomendacoes` do PostgreSQL e em `dados/processados/recomendacoes.json`.
-
-### RF12 — Produção de Métricas e KPIs
-
-**Requisito:**  
-O projeto deverá calcular no mínimo:
-
-```text
-2 métricas operacionais
-2 KPIs orientados à tomada de decisão
+```yaml
+recomendacao:
+  limite: 20
 ```
 
-Possíveis indicadores:
+As recomendações válidas dentro desse limite são gravadas no PostgreSQL e em `dados/processados/recomendacoes.json`.
 
-- Total de usuários;
-- Total de conteúdos;
-- Visualizações por período;
-- Avaliação média;
-- Taxa de conclusão;
-- Engajamento;
-- Retenção;
-- Conversão das recomendações;
-- Tempo médio consumido;
-- Total de recomendações geradas.
+## RF12 — Métricas e KPIs
 
-Para cada KPI deverão ser documentados:
+O projeto documenta métricas operacionais e quatro KPIs de decisão em `documentacao/kpis.md`, incluindo nome, objetivo, fórmula, fonte, periodicidade e interpretação.
 
-- Nome;
-- Objetivo;
-- Fórmula;
-- Fonte dos dados;
-- Periodicidade;
-- Interpretação.
+Indicadores utilizados incluem:
 
-### RF13 — Dashboard no Apache Superset
+- total de usuários;
+- total de conteúdos;
+- média de tempo por interação;
+- usuários ativos;
+- visualizações por categoria;
+- taxa de conclusão por categoria;
+- taxa de conversão das recomendações.
 
-**Requisito:**  
-O dashboard deverá utilizar os dados consolidados no PostgreSQL.
+## RF13 — Apache Superset
 
-Deverá possuir no mínimo:
+O dashboard utiliza dados consolidados no PostgreSQL e possui evidências de:
 
-```text
-3 cartões de indicadores
-1 gráfico de barras
-1 gráfico de linhas
-2 filtros interativos
-```
+- pelo menos 3 cartões;
+- gráfico de barras;
+- gráfico de linhas;
+- filtros interativos;
+- perguntas de negócio documentadas.
 
-O dashboard deverá responder pelo menos duas perguntas de negócio definidas pela equipe.
-
-### RF14 — Registro de Execução
-
-**Requisito:**  
-O sistema deverá registrar as principais etapas do processamento.
-
-**Implementação:**
-
-Os logs deverão registrar:
-
-- Início do processamento;
-- Término do processamento;
-- Arquivos processados;
-- Quantidade de registros lidos;
-- Registros rejeitados;
-- Falhas de conexão;
-- Falhas de persistência;
-- Falhas relacionadas aos embeddings;
-- Tempo de processamento.
-
-Os registros de execução são armazenados em:
+O pacote exportado está em:
 
 ```text
-logs/
+dashboard/dashboard_export.zip
 ```
+
+As evidências estão em `dashboard/evidencias/`.
+
+## RF14 — Logs e observabilidade
+
+O arquivo de log é configurado em `config/config.yaml` e gerado em `logs/pipeline.log`.
+
+Os logs registram:
+
+- início e término do pipeline;
+- fontes processadas;
+- quantidades lidas e rejeitadas;
+- tempos das principais etapas;
+- falhas de conexão/persistência no PostgreSQL;
+- falhas de conexão/persistência no MongoDB;
+- falhas de geração de embeddings com rastreabilidade da exceção;
+- falhas de persistência dos vetores e recomendações.
 
 ---
 
-## Decisões Adotadas para o Tratamento dos Dados
-
-Durante o desenvolvimento foram adotadas as seguintes decisões:
-
-1. **Preservação dos dados originais**  
-   Os arquivos presentes em `dados/brutos/` não são sobrescritos durante o pipeline.
-
-2. **Rastreabilidade de registros rejeitados**  
-   Registros inválidos, incompletos ou duplicados mantêm a justificativa de sua classificação.
-
-3. **Separação entre dados brutos e processados**  
-   Dados tratados são armazenados exclusivamente em `dados/processados/`.
-
-4. **Integridade no PostgreSQL**  
-   Chaves primárias, estrangeiras e restrições são utilizadas para impedir registros inconsistentes.
-
-5. **Separação das credenciais**  
-   Senhas e dados sensíveis ficam fora do código-fonte através do arquivo `.env`.
-
-6. **Processamento resiliente**  
-   Um registro inválido não deverá impedir que os demais registros sejam processados.
-
----
-
-## Tecnologias Utilizadas
-
-- **Python**
-- **Pandas**
-- **PostgreSQL**
-- **psycopg2**
-- **MongoDB**
-- **PyMongo**
-- **pgvector**
-- **Sentence Transformers**
-- **PyYAML**
-- **python-dotenv**
-- **Apache Superset**
-- **Pytest**
-- **Git / GitHub**
-
----
-
-##  Estrutura do Projeto
+# Estrutura do projeto
 
 ```text
 desafio-03-pipeline-recomendacao/
 ├── config/
 │   └── config.yaml
-│
 ├── dados/
 │   ├── brutos/
 │   │   ├── catalogo.csv
 │   │   ├── interacoes.json
 │   │   └── comentarios.json
-│   │
 │   └── processados/
 │       ├── catalogo_processado.csv
 │       ├── interacoes_processadas.json
 │       ├── comentarios_processados.json
 │       ├── embeddings.json
 │       ├── recomendacoes.json
-│       ├── registros_rejeitados.json
 │       └── resumo_ingestao.json
-│
 ├── dashboard/
 │   ├── dashboard_export.zip
 │   ├── sync_database.py
 │   └── evidencias/
-│       └── README.md
-│
 ├── documentacao/
-│   ├── modelo_de_dados.pdf
+│   ├── modelo_dados.pdf
 │   ├── arquitetura.pdf
 │   ├── especificacao_tecnica.md
 │   ├── kpis.md
 │   ├── uso_da_ia.md
 │   └── README.md
-│
-├── logs/
-│   └── pipeline.log
-│
 ├── mongodb/
 │   └── consultas.js
-│
 ├── sql/
 │   ├── criar_banco.sql
 │   └── consultas.sql
-│
 ├── src/
-│   ├── __init__.py
 │   ├── main.py
 │   ├── config.py
 │   ├── logging_utils.py
-│   │
 │   ├── ingestao/
-│   │   ├── __init__.py
-│   │   ├── leitura.py
-│   │   ├── validacao.py
-│   │   ├── tratamento.py
-│   │   └── pipeline.py
-│   │
 │   ├── database/
-│   │   ├── __init__.py
-│   │   ├── postgres.py
-│   │   └── mongo.py
-│   │
 │   └── recomendacao/
-│       ├── __init__.py
-│       ├── embeddings.py
-│       ├── busca.py
-│       ├── motor.py
-│       └── persistencia.py
-│
 ├── tests/
-│   ├── conftest.py
-│   ├── test_dashboard_metricas.py
-│   ├── test_embeddings.py
-│   ├── test_ingestao.py
-│   ├── test_mongo.py
-│   ├── test_postgres.py
-│   ├── test_recomendacao.py
-│   ├── test_regras_negocio.py
-│   └── test_validacao.py
-│
 ├── docker-compose.yml
 ├── .env.example
 ├── .gitignore
@@ -525,340 +283,208 @@ desafio-03-pipeline-recomendacao/
 └── README.md
 ```
 
----
-
-## Configuração Dinâmica (`config/config.yaml`)
-
-As configurações do projeto ficam centralizadas no arquivo:
-
-```text
-config/config.yaml
-```
-
-Exemplo:
-
-```yaml
-dados:
-  catalogo: dados/brutos/catalogo.csv
-  interacoes: dados/brutos/interacoes.json
-  comentarios: dados/brutos/comentarios.json
-  resumo_ingestao: dados/processados/resumo_ingestao.json
-
-postgres:
-  schema: public
-
-mongodb:
-  colecao_comentarios: comentarios
-
-recomendacao:
-  limite: 10
-```
-
-As credenciais de banco de dados são mantidas separadamente no `.env`.
+`dados/processados/registros_rejeitados.json` e `logs/pipeline.log` são gerados durante a execução quando aplicável.
 
 ---
 
-## Guia de Instalação e Execução
+# Configuração
 
-O projeto é compatível com **Windows**, **Linux** e **macOS**. Siga as instruções do seu sistema operacional abaixo:
-
----
-
-### 1. Clonar o Repositório e Acessar o Diretório
+## 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/desafio-03-pipeline-recomendacao.git
+git clone https://github.com/diegocbaleite/desafio-03-pipeline-recomendacao.git
 cd desafio-03-pipeline-recomendacao
 ```
 
----
+## 2. Criar e ativar o ambiente virtual
 
-### 2. Criar e Ativar o Ambiente Virtual Python
+Linux/macOS:
 
-#### No Windows (PowerShell):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Windows PowerShell:
+
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
-*(Caso ocorra erro de permissão no PowerShell, execute antes: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process`)*
 
-#### No Windows (Prompt de Comando - CMD):
-```cmd
-python -m venv .venv
-.\.venv\Scripts\activate.bat
-```
-
-#### No Linux (Bash / Zsh):
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-#### No macOS (Terminal):
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
----
-
-### 3. Instalar as Dependências
-
-Em qualquer sistema operacional, com o ambiente virtual `.venv` ativado:
+## 3. Instalar dependências
 
 ```bash
-pip install --upgrade pip
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
----
+## 4. Criar o `.env`
 
-### 4. Configurar as Variáveis de Ambiente (`.env`)
+Linux/macOS:
 
-Crie o arquivo local `.env` a partir do modelo pré-configurado `.env.example`:
-
-#### No Windows (PowerShell):
-```powershell
-Copy-Item .env.example .env
-```
-
-#### No Windows (CMD):
-```cmd
-copy .env.example .env
-```
-
-#### No Linux ou  macOS:
 ```bash
 cp .env.example .env
 ```
 
-> **Nota:** Os valores padrão do arquivo `.env.example` já estão sincronizados com as portas e credenciais do `docker-compose.yml` (`postgres:postgres` e `admin:admin123`).
+Windows PowerShell:
 
----
+```powershell
+Copy-Item .env.example .env
+```
 
-### 5. Inicializar os Bancos de Dados via Docker
+Depois, **preencha os valores vazios no `.env` antes de iniciar o Docker**. O arquivo de exemplo não contém senhas reais.
 
-Para subir os contêineres do **PostgreSQL** (com extensão nativa `pgvector`) e do **MongoDB**:
+Variáveis que precisam de valor no ambiente local:
+
+```text
+POSTGRES_PASSWORD=
+MONGO_PASSWORD=
+SUPERSET_SECRET_KEY=
+SUPERSET_ADMIN_PASSWORD=
+```
+
+Os demais valores podem ser mantidos ou ajustados conforme o ambiente. Nunca versione o arquivo `.env`.
+
+## 5. Subir os serviços
 
 ```bash
 docker compose up -d
 ```
 
-Para verificar se os contêineres estão em execução:
+Verifique:
 
 ```bash
 docker compose ps
 ```
 
+Serviços esperados:
+
+- PostgreSQL + pgvector;
+- MongoDB;
+- Apache Superset.
+
+> Para preservar os dados persistidos em volumes Docker, não use `docker compose down -v` a menos que queira apagar os volumes deliberadamente.
+
 ---
 
-## Execução da Aplicação — RF01
+# Execução do pipeline
 
-A aplicação integrada deverá ser executada a partir da raiz do projeto:
+Com o `.venv` ativado, `.env` configurado e bancos disponíveis:
 
 ```bash
 python -m src.main
 ```
 
-O comando executará o fluxo unificado de ponta a ponta:
-1. Ingestão, validação e tratamento das 3 fontes (catálogo, interações e comentários);
-2. Persistência dos dados relacionais no PostgreSQL;
-3. Carga e enriquecimento semiestruturado no MongoDB com agregação analítica;
-4. Geração dos embeddings densos (384d) e armazenamento via pgvector;
-5. Demonstração de 3 buscas semânticas em linguagem natural;
-6. Cálculo do motor de recomendação personalizada ($Ivis$, $Icur$ e $Iconc$);
-7. Persistência das recomendações no PostgreSQL e em arquivo processado JSON;
-8. Atualização do resumo geral da ingestão em `dados/processados/resumo_ingestao.json`.
+Fluxo executado:
+
+1. ingestão, validação e tratamento;
+2. carga PostgreSQL;
+3. carga e agregação MongoDB;
+4. geração/reaproveitamento dos embeddings e persistência pgvector;
+5. demonstração das buscas semânticas;
+6. motor de recomendação;
+7. persistência das recomendações;
+8. atualização do resumo e logs.
 
 ---
 
-## Testes Automatizados — Pytest
+# Testes automatizados
 
-A suíte de testes é organizada de forma modular, permitindo a execução completa do sistema ou a validação pontual por componente:
+A suíte possui **60 testes automatizados** após a inclusão do teste específico de reaproveitamento de embeddings do RF08.
 
-### Execução Completa (59 testes):
+Execução completa:
+
 ```bash
-python -m pytest -v
+python -m pytest -q
 ```
 
-### Execução Isolada por Domínio:
+Execução por domínio:
+
 ```bash
-# Ingestão (RF01, RF02, RF04, RF05)
 python -m pytest tests/test_ingestao.py -v
-
-# Validação e Qualidade dos Dados (RF03)
 python -m pytest tests/test_validacao.py -v
-
-# Banco Relacional PostgreSQL e pgvector (RF06, RF08, RF11)
 python -m pytest tests/test_postgres.py -v
-
-# Banco NoSQL MongoDB (RF07)
 python -m pytest tests/test_mongo.py -v
-
-# Embeddings e Busca Semântica (RF08, RF09)
 python -m pytest tests/test_embeddings.py -v
-
-# Motor de Recomendação (RF10, RF11)
 python -m pytest tests/test_recomendacao.py -v
-
-# Métricas, KPIs e Integridade do Dashboard Superset (RF12, RF13)
+python -m pytest tests/test_regras_negocio.py -v
 python -m pytest tests/test_dashboard_metricas.py -v
 ```
 
-> **Status:** 59 testes automatizados cobrindo 100% dos requisitos funcionais implementados (RF01 a RF13), todos aprovados com sucesso.
+A aprovação da suíte completa depende dos serviços e das credenciais locais estarem configurados corretamente. Antes da entrega, execute a suíte no ambiente final e confirme que todos os testes terminam sem falhas.
 
 ---
 
-## Visualização no Apache Superset — RF13
+# Apache Superset
 
-O projeto inclui o **Apache Superset** totalmente integrado ao pipeline via Docker Compose para visualização e acompanhamento de métricas operacionais e estratégicas (KPIs).
-
-### 1. Acesso ao Apache Superset
-
-Após inicializar os contêineres (`docker compose up -d`) e executar o pipeline (`python -m src.main`):
-
-1. Abra o navegador e acesse:
-   ```text
-   http://localhost:8088
-   ```
-2. Realize o login com as credenciais padrão configuradas no `.env`:
-   - **Username:** `admin`
-   - **Password:** `admin`
-
----
-
-### 2. Importação e Sincronização do Dashboard
-
-#### 2.1 Sincronização Automática (Zero Configuração)
-O script `dashboard/sync_database.py` é executado **automaticamente durante a inicialização do contêiner do Superset**. Ele realiza:
-1. Extração dinâmica do UUID do banco a partir do pacote `dashboard/dashboard_export.zip`;
-2. Criação e sincronização da conexão com o PostgreSQL utilizando as credenciais definidas no `.env`;
-3. Importação do painel analítico completo via CLI (`superset import-dashboards`);
-4. Publicação automática do painel (`published: true`).
-
-Ao acessar o menu **Dashboards**, o painel **"Dashboard - Desafio 3"** já estará publicado, conectado ao PostgreSQL e exibindo os dados consolidados.
-
-#### 2.2 Reimportação Manual via Interface Web (Opcional)
-Caso deseje reimportar o painel manualmente através da interface web do Superset:
-1. No menu superior direito, clique em **Settings (ícone de engrenagem) → Import Dashboards**;
-2. Selecione o arquivo `dashboard/dashboard_export.zip`;
-3. **Sobre a solicitação de senha do banco:**  
-   Por diretriz de segurança de arquitetura do Superset, senhas de banco de dados nunca são exportadas em texto claro dentro de arquivos ZIP (*aparecendo mascaradas como `XXXXXXXXXX`*). No campo de senha do banco **Other**, digite a senha do PostgreSQL configurada no seu `.env` (`POSTGRES_PASSWORD`, por exemplo `1234` ou `postgres`);
-4. Clique em **Import**.
-
----
-
-### 3. Estrutura dos Componentes do Dashboard
-
-O painel reúne todos os componentes analíticos obrigatórios definidos pelo edital:
+Com os containers ativos, acesse:
 
 ```text
-Dashboard — Desafio 3
-│
-├── Filtros Nativos (Interativos)
-│   ├── Filtro de Período (Time Range)
-│   └── Filtro de Categoria (Dropdown / Select)
-│
-├── Cartões Executivos (Métricas Operacionais)
-│   ├── Total de Usuários Registrados (Big Number)
-│   ├── Total de Conteúdos Cadastrados (Big Number)
-│   └── Média de Tempo por Interação (Big Number)
-│
-└── Indicadores de Tomada de Decisão (KPIs - RF12)
-    ├── KPI 1: Usuários Ativos no Período (Big Number)
-    ├── KPI 2: Visualizações por Categoria ao Longo do Tempo (Linhas / Série Temporal)
-    ├── KPI 3: Taxa de Conclusão por Categoria (Barras Comparativas)
-    └── KPI 4: Taxa de Conversão das Recomendações (Big Number)
+http://localhost:8088
 ```
 
----
+Use o usuário e a senha definidos em:
 
-### 4. Perguntas de Negócio Respondidas pelo Dashboard
+```text
+SUPERSET_ADMIN_USERNAME
+SUPERSET_ADMIN_PASSWORD
+```
 
-1. **Pergunta 1 (Priorização e Alocação Estratégica de Conteúdo):**  
-   *Quais categorias temáticas apresentam maior interesse inicial (visualizações) versus maior taxa de conclusão efetiva, indicando quais cursos devem receber novos investimentos de produção ou reformulação?*  
-   - **Como responder:** Compare o gráfico de linhas temporal (*Visualizações por Categoria*) com o gráfico de barras (*Taxa de Conclusão por Categoria*).
+O script `dashboard/sync_database.py` sincroniza a conexão PostgreSQL e importa o pacote `dashboard/dashboard_export.zip` durante a inicialização do serviço Superset.
 
-2. **Pergunta 2 (Efetividade do Motor de Inteligência Artificial):**  
-   *Qual é o percentual de recomendações geradas pelo motor vetorial que efetivamente foram convertidas em interações reais pelos alunos após a recomendação?*  
-   - **Como responder:** Observe o cartão executivo **Taxa de Conversão das Recomendações** e aplique o filtro de período para avaliar a evolução da assertividade das sugestões.
-
----
-
-## Controle de Versão e Branches
-
-O projeto utiliza desenvolvimento colaborativo com uma branch principal e três branches de funcionalidades.
-
-### `main`
-
-Branch estável e utilizada para integração do projeto.
-
-### `feature/estudante-1-ingestao-postgresql`
-
-Atividades:
-
-- Ingestão;
-- Validação;
-- Tratamento;
-- PostgreSQL.
-
-### `feature/estudante-2-mongodb-embeddings-recomendacoes`
-
-Atividades:
-
-- MongoDB;
-- Embeddings;
-- pgvector;
-- Busca semântica;
-- Motor de recomendação.
-
-### `feature/estudante-3-metricas-superset`
-
-Atividades:
-
-- Métricas;
-- KPIs;
-- Consultas;
-- Views;
-- Dashboard no Apache Superset.
+Caso a importação seja feita manualmente, utilize o valor real de `POSTGRES_PASSWORD` quando o Superset solicitar a senha da conexão.
 
 ---
 
-## Uso Consciente de Ferramentas de Inteligência Artificial
+# Documentação e entregáveis
 
-O projeto adota uma política estrita de governança técnica contra práticas de *vibecoding*: toda a concepção arquitetural, modelagem de dados, decisões matemáticas e resolução de regras de negócio foram de autoria exclusiva dos discentes.
+A pasta `documentacao/` contém:
 
-As ferramentas **ChatGPT (OpenAI)** e **Google Gemini (Google)** foram utilizadas pontualmente apenas como apoio a tarefas mecânicas, verificação de sintaxe e documentação:
+- `modelo_dados.pdf` — modelo conceitual/lógico/relacional;
+- `arquitetura.pdf` — arquitetura do pipeline;
+- `especificacao_tecnica.md` — decisões e detalhes técnicos;
+- `kpis.md` — métricas, KPIs, fórmulas e perguntas de negócio;
+- `uso_da_ia.md` — registro do uso de IA solicitado pelo desafio.
 
-### Finalidades Autorizadas e Aplicadas:
+O repositório também inclui os arquivos de dados utilizados, scripts PostgreSQL, consultas MongoDB, busca vetorial, recomendação, exportação do Superset e instruções de instalação/execução.
 
-- Consulta de sintaxe pontual (operadores pgvector e sintaxe de agregações `$group` no MongoDB);
-- Aceleração de código repetitivo de testes unitários (`pytest`);
-- Apoio na padronização e diagramação de tabelas e documentação em Markdown;
-- Revisão crítica de cobertura de testes.
+---
 
-### Princípio de Domínio e Responsabilidade:
+# Uso de Inteligência Artificial
 
-A equipe revisou, testou e validou cada sugestão. Erros comuns de IA (como truncamento indevido de IDs decimais, má interpretação de valores de corte de borda e tentativas de junções custosas no NoSQL) foram ativamente identificados e corrigidos pelos alunos. 
+As ferramentas ChatGPT e Google Gemini foram utilizadas como apoio em revisão, sintaxe, testes e documentação. O registro de solicitações, decisões, inadequações encontradas e alterações realizadas está em:
 
-O detalhamento completo das solicitações, correções humanas e decisões tomadas está registrado no documento oficial:
- [`documentacao/uso_da_ia.md`](documentacao/uso_da_ia.md).
+```text
+documentacao/uso_da_ia.md
+```
 
-### Participação dos Discentes
+A equipe permanece responsável por testar, compreender e justificar toda a solução apresentada.
 
-As sugestões fornecidas pela ferramenta deverão ser analisadas, testadas e adaptadas pelos integrantes da equipe.
+---
 
-Os estudantes continuam responsáveis por:
+# Controle de versão
 
-- Implementar e revisar o código;
-- Executar testes;
-- Validar os resultados;
-- Corrigir erros;
-- Compreender a solução;
-- Justificar as decisões adotadas;
-- Organizar o repositório;
-- Realizar commits e merges;
-- Preparar a apresentação final.
+A `main` é a branch final de entrega. As branches abaixo registram o desenvolvimento das responsabilidades iniciais da equipe:
+
+- `feature/estudante-1-ingestao-postgresql`;
+- `feature/estudante-2-mongodb-embeddings-recomendacoes`;
+- `feature/estudante-3-metricas-superset`.
+
+---
+
+# Checklist final de validação
+
+Antes da apresentação/entrega, na `main` atualizada:
+
+```bash
+git status -sb
+docker compose ps
+python -m pytest -q
+python -m src.main
+```
+
+A entrega deve ser considerada validada somente depois de confirmar a suíte completa e a execução integrada no ambiente local configurado.
 
 ---
 
