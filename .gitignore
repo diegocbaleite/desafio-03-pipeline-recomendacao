@@ -30,4 +30,4 @@ dados/processados/*
 !dados/processados/embeddings.json
 
 # Apache Superset
-dashboard/superset/*
+dashboard/superset/
