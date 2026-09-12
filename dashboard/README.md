@@ -10,6 +10,7 @@ Antes de realizar a importação, certifique-se de que:
 * O banco de dados utilizado pelo dashboard esteja configurado no Superset;
 * As tabelas e views utilizadas pelos KPIs estejam disponíveis no banco de dados;
 * O arquivo `dashboard_export_20260912T164432.zip` esteja disponível para importação.
+* O programa tenha sido executado corretamente ao menos uma vez para que o banco esteja populado.
 
 > **Importante:** o arquivo exportado contém a configuração do dashboard. Dependendo da forma como o ambiente do Superset foi configurado, pode ser necessário criar ou configurar previamente a conexão com o banco de dados e os datasets utilizados pelos gráficos.
 
