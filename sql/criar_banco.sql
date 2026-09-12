@@ -38,6 +38,16 @@ CREATE TABLE IF NOT EXISTS interacoes (
     avaliacao NUMERIC(2,1) CHECK (avaliacao >= 1 AND avaliacao <= 5)
 );
 
+DO $$ 
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='interacoes' AND column_name='tempo_consumido') THEN
+        ALTER TABLE interacoes RENAME COLUMN tempo_consumido TO tempo_consumido_min;
+    END IF;
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='interacoes' AND column_name='avaliacao_atribuida') THEN
+        ALTER TABLE interacoes RENAME COLUMN avaliacao_atribuida TO avaliacao;
+    END IF;
+END $$;
+
 CREATE TABLE IF NOT EXISTS recomendacoes (
     recomendacao_id BIGSERIAL PRIMARY KEY,
     usuario_id BIGINT NOT NULL REFERENCES usuarios(usuario_id),
