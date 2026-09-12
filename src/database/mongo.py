@@ -17,8 +17,8 @@ def conectar_mongo(config: dict[str, Any]) -> MongoClient:
     """Cria cliente de conexão com MongoDB com credenciais do ambiente."""
     cfg = config["mongodb"]
     uri = cfg["uri"]
-    user = cfg.get("user")
-    password = cfg.get("password")
+    user = cfg["user"]
+    password = cfg["password"]
 
     if user and password and "@" not in uri:
         prefixo = "mongodb://"

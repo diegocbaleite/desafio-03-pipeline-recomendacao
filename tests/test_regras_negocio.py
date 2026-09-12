@@ -1,4 +1,4 @@
-"""Testes unitários dos módulos do Estudante 2 (MongoDB, Embeddings e Recomendações)."""
+"""Testes unitários de regras de negócio, limites de classificação e validações de borda (RF07 a RF11)."""
 import pytest
 from src.recomendacao.embeddings import preparar_texto_conteudo
 from src.recomendacao.motor import classificar_status_recomendacao
@@ -117,4 +117,18 @@ def test_gerar_recomendacoes_sem_truncamento_e_sem_negativos(monkeypatch):
         assert r["conteudo_id"] != 1
         assert r["status"] in ("Positivo", "Estável")
         assert r["posicao"] >= 1
+
+
+def test_ausencia_fallbacks_credenciais(monkeypatch):
+    """Garante que a ausência de variáveis de credenciais gera erro estrito sem fallbacks."""
+    from src.config import carregar_config
+
+    monkeypatch.setattr("src.config.load_dotenv", lambda *args, **kwargs: None)
+    monkeypatch.delenv("POSTGRES_PASSWORD", raising=False)
+    with pytest.raises(KeyError) as excinfo:
+        carregar_config()
+    assert "POSTGRES_PASSWORD" in str(excinfo.value)
+    assert "Fallbacks e valores padrão estão desabilitados" in str(excinfo.value)
+
+
 

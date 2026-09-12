@@ -60,7 +60,15 @@ def gerar_recomendacoes_usuario(
     - Negativo (Pontuação <= 40 ou Iconc == 0) é descartado da lista de sugestões
       conforme regra de negócio da Seção 7 do desafio, a menos que incluir_negativos=True.
     """
-    data_geracao = datetime.now().isoformat(timespec="seconds")
+    # Data de geração da recomendação:
+    # Para bases de dados estáticas, permite simulação histórica via 'data_corte_simulada'
+    # para que interações posteriores possam ser avaliadas na taxa de conversão do Superset (RF12).
+    cfg_rec = config.get("recomendacao", {}) if config else {}
+    data_corte = cfg_rec.get("data_corte_simulada")
+    if data_corte:
+        data_geracao = str(data_corte)
+    else:
+        data_geracao = datetime.now().isoformat(timespec="seconds")
     itens_catalogo = catalogo if catalogo is not None else carregar_catalogo(config)
     embeddings = obter_embeddings_cache(config)
 

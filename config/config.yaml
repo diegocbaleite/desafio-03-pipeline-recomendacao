@@ -29,6 +29,7 @@ embeddings:
 recomendacao:
   limite: 20
   nota_minima_curtida: 4.0
+  data_corte_simulada: "2026-05-01T10:00:00"
 
 logs:
   arquivo: logs/pipeline.log

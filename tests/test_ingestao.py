@@ -59,10 +59,21 @@ def test_geracao_ids_internos_sequenciais():
 
 
 def test_executar_ingestao_com_dados_reais(config_global: dict, tmp_path: Path):
+    import copy
+
+    config_teste = copy.deepcopy(config_global)
+    config_teste["dados"]["resumo_ingestao"] = str(tmp_path / "resumo_ingestao.json")
+    config_teste["dados"]["rejeitados"] = str(tmp_path / "registros_rejeitados.json")
+    config_teste["dados"]["processados"] = {
+        "catalogo": str(tmp_path / "catalogo_processado.csv"),
+        "interacoes": str(tmp_path / "interacoes_processadas.json"),
+        "comentarios": str(tmp_path / "comentarios_processados.json"),
+    }
+
     log_teste = tmp_path / "teste_pipeline.log"
     logger = configurar_logger(log_teste)
 
-    resultado = executar_ingestao(config_global, logger=logger)
+    resultado = executar_ingestao(config_teste, logger=logger)
     assert "catalogo" in resultado
     assert "interacoes" in resultado
     assert "comentarios" in resultado
