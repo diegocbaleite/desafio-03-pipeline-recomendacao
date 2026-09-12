@@ -28,3 +28,6 @@ dados/processados/*
 !dados/processados/comentarios_processados.json
 !dados/processados/recomendacoes.json
 !dados/processados/embeddings.json
+
+# Apache Superset
+dashboard/superset/*
