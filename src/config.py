@@ -28,6 +28,18 @@ def carregar_config(caminho: str | Path = "config/config.yaml") -> dict[str, Any
     mongodb = config.setdefault("mongodb", {})
     mongodb["uri"] = os.getenv("MONGO_URI", "mongodb://localhost:27017")
     mongodb["database"] = os.getenv("MONGO_DB", "ficdev_recomendacao")
+    mongodb["user"] = os.getenv("MONGO_USER", "admin")
+    mongodb["password"] = os.getenv("MONGO_PASSWORD", "admin123")
+    mongodb["colecao_comentarios"] = mongodb.get("colecao_comentarios", "comentarios")
+
+    embeddings = config.setdefault("embeddings", {})
+    embeddings.setdefault("modelo", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+    embeddings.setdefault("dimensao", 384)
+    embeddings.setdefault("batch_size", 64)
+
+    recomendacao = config.setdefault("recomendacao", {})
+    recomendacao.setdefault("limite", 10)
+    recomendacao.setdefault("nota_minima_curtida", 4.0)
 
     return config
 

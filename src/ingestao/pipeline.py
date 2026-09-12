@@ -233,6 +233,20 @@ def executar_ingestao(config: dict[str, Any], logger) -> dict[str, Any]:
             "interacoes": resumo_interacoes,
             "comentarios": resumo_comentarios,
         },
+        "detalhamento_correcoes": {
+            "catalogo": {
+                "descricao": "Conversão de tipos (str para int em IDs e carga horária) e padronização de maiúsculas/minúsculas em categorias",
+                "total_corrigidos": resumo_catalogo["corrigidos"],
+            },
+            "interacoes": {
+                "descricao": "Adequação dos campos oficiais (tempo_consumido -> tempo_consumido_min, avaliacao_atribuida -> avaliacao) e conversão para float",
+                "total_corrigidos": resumo_interacoes["corrigidos"],
+            },
+            "comentarios": {
+                "descricao": "Padronização das tags (remoção de duplicatas, conversão para minúsculas e ordenação alfabética)",
+                "total_corrigidos": resumo_comentarios["corrigidos"],
+            },
+        },
         "carregados_banco": {
             "postgresql": 0,
             "mongodb": 0,
