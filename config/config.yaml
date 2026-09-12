@@ -6,16 +6,30 @@ dados:
   catalogo: dados/brutos/catalogo.csv
   interacoes: dados/brutos/interacoes.json
   comentarios: dados/brutos/comentarios.json
+  rejeitados: dados/processados/registros_rejeitados.json
   resumo_ingestao: dados/processados/resumo_ingestao.json
+  processados:
+    catalogo: dados/processados/catalogo_processado.csv
+    interacoes: dados/processados/interacoes_processadas.json
+    comentarios: dados/processados/comentarios_processados.json
 
 postgres:
   schema: public
+  script_criacao: sql/criar_banco.sql
+  carregar_automaticamente: true
 
 mongodb:
   colecao_comentarios: comentarios
 
 embeddings:
-  modelo: a_definir
+  modelo: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+  dimensao: 384
+  batch_size: 64
 
 recomendacao:
-  limite: 10
+  limite: 20
+  nota_minima_curtida: 4.0
+  data_corte_simulada: "2026-05-01T10:00:00"
+
+logs:
+  arquivo: logs/pipeline.log
