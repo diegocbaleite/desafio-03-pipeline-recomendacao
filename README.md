@@ -1,4 +1,4 @@
-# 📊 Pipeline de Recomendação e Dashboard de Conteúdos Educacionais
+# Pipeline de Recomendação e Dashboard de Conteúdos Educacionais
 
 Sistema desenvolvido em Python para ingestão, validação, tratamento, armazenamento, busca semântica, recomendação e análise de dados de uma plataforma fictícia de conteúdos educacionais.
 
@@ -6,7 +6,7 @@ O projeto recebe dados provenientes de arquivos CSV e JSON, realiza limpeza e pa
 
 ---
 
-## 👨‍💻 Identificação
+## Identificação
 
 **Alunos:**
 
@@ -22,7 +22,7 @@ O projeto recebe dados provenientes de arquivos CSV e JSON, realiza limpeza e pa
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 
 Desenvolver um pipeline de dados modular e reproduzível em Python capaz de:
 
@@ -48,11 +48,11 @@ Desenvolver um pipeline de dados modular e reproduzível em Python capaz de:
 
 ---
 
-## 📌 Mapeamento da Implementação dos Requisitos Funcionais
+## Mapeamento da Implementação dos Requisitos Funcionais
 
 Abaixo está o detalhamento técnico dos **Requisitos Funcionais RF01 a RF14** definidos para o desafio.
 
-### 🔹 RF01 — Inicialização e Configuração
+### RF01 — Inicialização e Configuração
 
 **Requisito:**  
 O sistema deverá ser executado pelo comando:
@@ -71,7 +71,7 @@ Também deverá utilizar arquivo de configuração em JSON ou YAML e manter cred
 - O arquivo `.env` não é versionado;
 - O arquivo `.env.example` é disponibilizado como modelo de configuração.
 
-### 🔹 RF02 — Leitura das Fontes de Dados
+### RF02 — Leitura das Fontes de Dados
 
 **Requisito:**  
 O sistema deverá ler no mínimo:
@@ -93,7 +93,7 @@ dados/brutos/
 
 O módulo de ingestão é responsável por realizar a leitura das fontes e informar a quantidade de registros encontrados.
 
-### 🔹 RF03 — Validação dos Dados
+### RF03 — Validação dos Dados
 
 **Requisito:**  
 Cada registro deverá ser classificado como:
@@ -119,7 +119,7 @@ O módulo de validação verifica:
 
 Os registros rejeitados mantêm o motivo de sua classificação para auditoria.
 
-### 🔹 RF04 — Tratamento e Padronização
+### RF04 — Tratamento e Padronização
 
 **Requisito:**  
 O sistema deverá limpar, padronizar e tratar os registros antes do armazenamento.
@@ -146,7 +146,7 @@ Os resultados tratados são enviados para:
 dados/processados/
 ```
 
-### 🔹 RF05 — Resumo da Ingestão
+### RF05 — Resumo da Ingestão
 
 **Requisito:**  
 Ao final do processamento deverá ser produzido um resumo em JSON.
@@ -170,7 +170,7 @@ registra informações como:
 - Registros carregados nos bancos;
 - Tempo total de processamento.
 
-### 🔹 RF06 — Persistência no PostgreSQL
+### RF06 — Persistência no PostgreSQL
 
 **Requisito:**  
 Os dados estruturados deverão ser armazenados no PostgreSQL.
@@ -203,7 +203,7 @@ sql/
 └── consultas.sql
 ```
 
-### 🔹 RF07 — Persistência no MongoDB
+### RF07 — Persistência no MongoDB
 
 **Requisito:**  
 Comentários, avaliações e outros dados semiestruturados deverão ser armazenados no MongoDB.
@@ -224,7 +224,7 @@ As consultas utilizadas serão registradas em:
 mongodb/consultas.js
 ```
 
-### 🔹 RF08 — Geração e Armazenamento de Embeddings
+### RF08 — Geração e Armazenamento de Embeddings
 
 **Requisito:**  
 Cada conteúdo válido deverá possuir uma representação vetorial.
@@ -247,7 +247,7 @@ Os vetores serão:
 
 O modelo de embeddings utilizado deverá ser registrado na documentação.
 
-### 🔹 RF09 — Busca por Similaridade Semântica
+### RF09 — Busca por Similaridade Semântica
 
 **Requisito:**  
 O sistema deverá receber uma consulta em linguagem natural e recuperar os conteúdos semanticamente mais semelhantes.
@@ -271,7 +271,7 @@ Quero aprender os fundamentos de banco de dados para inteligência artificial.
 
 A equipe deverá demonstrar pelo menos três consultas semânticas diferentes.
 
-### 🔹 RF10 — Geração de Recomendações
+### RF10 — Geração de Recomendações
 
 **Requisito:**  
 O sistema deverá gerar recomendações considerando o comportamento do usuário.
@@ -303,7 +303,7 @@ Onde:
 - **Estável (40.0 < Pontuação < 70.0):** Afinidade moderada / interesse parcial;
 - **Negativo (Pontuação <= 40.0 ou Iconc = 0):** Baixo interesse ou já concluído (**descartado da lista de sugestões**).
 
-### 🔹 RF11 — Persistência das Recomendações
+### RF11 — Persistência das Recomendações
 
 **Requisito:**  
 As recomendações geradas deverão ser armazenadas no PostgreSQL.
@@ -319,7 +319,7 @@ Cada recomendação possui:
 
 **Persistência Integral:** O pipeline armazena todas as sugestões válidas geradas para cada usuário ordenadas por pontuação decrescente ($1 \dots N$), sem truncamento artificial, persistindo-as na tabela `recomendacoes` do PostgreSQL e em `dados/processados/recomendacoes.json`.
 
-### 🔹 RF12 — Produção de Métricas e KPIs
+### RF12 — Produção de Métricas e KPIs
 
 **Requisito:**  
 O projeto deverá calcular no mínimo:
@@ -351,7 +351,7 @@ Para cada KPI deverão ser documentados:
 - Periodicidade;
 - Interpretação.
 
-### 🔹 RF13 — Dashboard no Apache Superset
+### RF13 — Dashboard no Apache Superset
 
 **Requisito:**  
 O dashboard deverá utilizar os dados consolidados no PostgreSQL.
@@ -367,7 +367,7 @@ Deverá possuir no mínimo:
 
 O dashboard deverá responder pelo menos duas perguntas de negócio definidas pela equipe.
 
-### 🔹 RF14 — Registro de Execução
+### RF14 — Registro de Execução
 
 **Requisito:**  
 O sistema deverá registrar as principais etapas do processamento.
@@ -394,7 +394,7 @@ logs/
 
 ---
 
-## ⚠️ Decisões Adotadas para o Tratamento dos Dados
+## Decisões Adotadas para o Tratamento dos Dados
 
 Durante o desenvolvimento foram adotadas as seguintes decisões:
 
@@ -418,7 +418,7 @@ Durante o desenvolvimento foram adotadas as seguintes decisões:
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Python**
 - **Pandas**
@@ -436,7 +436,7 @@ Durante o desenvolvimento foram adotadas as seguintes decisões:
 
 ---
 
-## 📁 Estrutura do Projeto
+##  Estrutura do Projeto
 
 ```text
 desafio-03-pipeline-recomendacao/
@@ -524,7 +524,7 @@ desafio-03-pipeline-recomendacao/
 
 ---
 
-## ⚙️ Configuração Dinâmica (`config/config.yaml`)
+## Configuração Dinâmica (`config/config.yaml`)
 
 As configurações do projeto ficam centralizadas no arquivo:
 
@@ -555,51 +555,101 @@ As credenciais de banco de dados são mantidas separadamente no `.env`.
 
 ---
 
-## 🐍 Ambiente Virtual e Instalação
+## Guia de Instalação e Execução
 
-### 1. Criar o ambiente virtual
+O projeto é compatível com **Windows**, **Linux** e **macOS**. Siga as instruções do seu sistema operacional abaixo:
 
-Linux/macOS:
+---
 
+### 1. Clonar o Repositório e Acessar o Diretório
+
+```bash
+git clone https://github.com/seu-usuario/desafio-03-pipeline-recomendacao.git
+cd desafio-03-pipeline-recomendacao
+```
+
+---
+
+### 2. Criar e Ativar o Ambiente Virtual Python
+
+#### No Windows (PowerShell):
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+*(Caso ocorra erro de permissão no PowerShell, execute antes: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process`)*
+
+#### No Windows (Prompt de Comando - CMD):
+```cmd
+python -m venv .venv
+.\.venv\Scripts\activate.bat
+```
+
+#### No Linux (Bash / Zsh):
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Windows PowerShell:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
+#### No macOS (Terminal):
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-### 2. Instalar as dependências
+---
+
+### 3. Instalar as Dependências
+
+Em qualquer sistema operacional, com o ambiente virtual `.venv` ativado:
 
 ```bash
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Criar o arquivo de ambiente
+---
 
-Linux:
+### 4. Configurar as Variáveis de Ambiente (`.env`)
 
+Crie o arquivo local `.env` a partir do modelo pré-configurado `.env.example`:
+
+#### No Windows (PowerShell):
+```powershell
+Copy-Item .env.example .env
+```
+
+#### No Windows (CMD):
+```cmd
+copy .env.example .env
+```
+
+#### No Linux ou  macOS:
 ```bash
 cp .env.example .env
 ```
 
-Configure no `.env` as credenciais locais do PostgreSQL e MongoDB (baseado no `.env.example`).
+> **Nota:** Os valores padrão do arquivo `.env.example` já estão sincronizados com as portas e credenciais do `docker-compose.yml` (`postgres:postgres` e `admin:admin123`).
 
-### 4. Inicializar os Bancos de Dados (Docker Compose)
+---
 
-Para subir os contêineres do PostgreSQL (com suporte nativo à extensão `pgvector`) e do MongoDB:
+### 5. Inicializar os Bancos de Dados via Docker
+
+Para subir os contêineres do **PostgreSQL** (com extensão nativa `pgvector`) e do **MongoDB**:
 
 ```bash
 docker compose up -d
 ```
 
+Para verificar se os contêineres estão em execução:
+
+```bash
+docker compose ps
+```
+
 ---
 
-## ▶️ Execução da Aplicação — RF01
+## Execução da Aplicação — RF01
 
 A aplicação integrada deverá ser executada a partir da raiz do projeto:
 
@@ -619,7 +669,7 @@ O comando executará o fluxo unificado de ponta a ponta:
 
 ---
 
-## 🧪 Testes Automatizados — Pytest
+## Testes Automatizados — Pytest
 
 A suíte de testes é organizada de forma modular, permitindo a execução completa do sistema ou a validação pontual por componente:
 
@@ -653,7 +703,7 @@ python -m pytest tests/test_recomendacao.py -v
 
 ---
 
-## 🔀 Controle de Versão e Branches
+## Controle de Versão e Branches
 
 O projeto utiliza desenvolvimento colaborativo com uma branch principal e três branches de funcionalidades.
 
@@ -698,7 +748,7 @@ Atividades:
 
 ---
 
-## 🤖 Uso Consciente de Ferramentas de Inteligência Artificial
+## Uso Consciente de Ferramentas de Inteligência Artificial
 
 O projeto adota uma política estrita de governança técnica contra práticas de *vibecoding*: toda a concepção arquitetural, modelagem de dados, decisões matemáticas e resolução de regras de negócio foram de autoria exclusiva dos discentes.
 
@@ -716,7 +766,7 @@ As ferramentas **ChatGPT (OpenAI)** e **Google Gemini (Google)** foram utilizada
 A equipe revisou, testou e validou cada sugestão. Erros comuns de IA (como truncamento indevido de IDs decimais, má interpretação de valores de corte de borda e tentativas de junções custosas no NoSQL) foram ativamente identificados e corrigidos pelos alunos. 
 
 O detalhamento completo das solicitações, correções humanas e decisões tomadas está registrado no documento oficial:
-👉 [`documentacao/uso_da_ia.md`](documentacao/uso_da_ia.md).
+ [`documentacao/uso_da_ia.md`](documentacao/uso_da_ia.md).
 
 ### Participação dos Discentes
 
@@ -736,7 +786,7 @@ Os estudantes continuam responsáveis por:
 
 ---
 
-## 👨‍💻 Autores
+## Autores
 
 - **Diego Assunção Leite**
 - **Gabriel Moreira Branco**

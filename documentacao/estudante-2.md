@@ -18,7 +18,7 @@ A implementação cobre a ingestão e consultas de dados semiestruturados no Mon
 
 ---
 
-## 🍃 1. MongoDB e Dados Semiestruturados (RF07)
+## 1. MongoDB e Dados Semiestruturados (RF07)
 
 ### 1.1 Por que utilizar o MongoDB para Comentários e Avaliações?
 Os comentários e avaliações possuem características típicas de dados semiestruturados:
@@ -39,7 +39,7 @@ Foram implementados índices em `conteudo_id`, `tags`, `avaliacao` e `categoria`
 
 ---
 
-## 🧠 2. Embeddings Vetoriais e pgvector (RF08)
+## 2. Embeddings Vetoriais e pgvector (RF08)
 
 ### 2.1 Modelo Adotado
 - **Modelo:** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
@@ -63,7 +63,7 @@ Os vetores calculados são atualizados na coluna `embedding` da tabela `conteudo
 
 ---
 
-## 🔍 3. Busca por Similaridade Semântica (RF09)
+## 3. Busca por Similaridade Semântica (RF09)
 
 O módulo `src/recomendacao/busca.py` realiza buscas em linguagem natural:
 1. Converte a consulta do usuário em embedding normalizado de 384d;
@@ -77,7 +77,7 @@ O módulo `src/recomendacao/busca.py` realiza buscas em linguagem natural:
 
 ---
 
-## 🎯 4. Motor de Recomendação Personalizada (RF10 & RF11)
+## 4. Motor de Recomendação Personalizada (RF10 & RF11)
 
 ### 4.1 Formulação Matemática e Perfil Ponderado do Usuário (`user_embedding`)
 A pontuação final atribuída a um conteúdo candidato $c$ para um usuário $u$ segue estritamente a formulação oficial do desafio:
@@ -133,7 +133,7 @@ Atendendo à especificação do desafio e à diretriz de arquitetura de dados:
 
 ---
 
-## 📁 5. Estrutura Modular dos Componentes sob `src/`
+##  5. Estrutura Modular dos Componentes sob `src/`
 
 - `src/database/mongo.py`: Cliente MongoDB, carga enriquecida e agregações (RF07).
 - `src/database/postgres.py`: Estendido para incluir persistência pgvector (RF08) e carga de recomendações (RF11).
@@ -145,7 +145,7 @@ Atendendo à especificação do desafio e à diretriz de arquitetura de dados:
 
 ---
 
-## 🧪 6. Execução e Testes
+## 6. Execução e Testes
 
 ### Execução Completa do Pipeline:
 ```bash

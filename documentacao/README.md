@@ -1,4 +1,4 @@
-# 📚 Documentação Técnica do Projeto
+# Documentação Técnica do Projeto
 
 Documentos técnicos do Desafio Prático 1 organizados por estudante e entregáveis oficiais:
 
