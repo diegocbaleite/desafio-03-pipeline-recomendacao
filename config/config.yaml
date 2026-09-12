@@ -22,11 +22,13 @@ mongodb:
   colecao_comentarios: comentarios
 
 embeddings:
-  modelo: sentence-transformers/all-MiniLM-L6-v2
+  modelo: sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
   dimensao: 384
+  batch_size: 64
 
 recomendacao:
-  limite: 10
+  limite: 20
+  nota_minima_curtida: 4.0
 
 logs:
   arquivo: logs/pipeline.log

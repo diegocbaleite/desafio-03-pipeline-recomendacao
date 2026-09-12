@@ -4,19 +4,27 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+.pytest_cache/
 
-# Ambiente
+# Ambiente e credenciais sensíveis (RF01)
 .env
 
-# IDE/SO
+# IDE e Sistema Operacional
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
 
-# Logs e saídas locais
+# Logs locais
 logs/*.log
+!logs/.gitkeep
+
+# Entregáveis de dados processados e resumo obrigatório da ingestão (RF05)
 dados/processados/*
 !dados/processados/.gitkeep
-
-# Cache/modelos
-.cache/
+!dados/processados/resumo_ingestao.json
+!dados/processados/catalogo_processado.csv
+!dados/processados/interacoes_processadas.json
+!dados/processados/comentarios_processados.json
+!dados/processados/recomendacoes.json
+!dados/processados/embeddings.json

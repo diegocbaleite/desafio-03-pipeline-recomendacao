@@ -83,6 +83,12 @@ O pipeline gera `dados/processados/resumo_ingestao.json` com as quantidades de r
 lidos, válidos, inválidos, incompletos, duplicados, corrigidos, registros processados para
 persistência e tempo total.
 
+### Detalhamento dos registros classificados como "corrigidos" (RF04):
+A classificação de "corrigido" ocorre sempre que o registro tratado difere da sua representação bruta original (`tratado != original`):
+- **Catálogo (1.000 corrigidos):** Como o arquivo de entrada é um CSV lido textualmente, os campos `conteudo_id` e `carga_horaria_min` foram tipados de string para inteiros (`int`). Além disso, 495 categorias foram padronizadas em caixa e espaçamento (`strip().title()`).
+- **Interações (1.000 corrigidos):** O formato oficial utilizava `tempo_consumido` e `avaliacao_atribuida`, que foram normalizados e renomeados para `tempo_consumido_min` e `avaliacao` (com conversão para valores numéricos decimais `float`).
+- **Comentários (837 corrigidos):** As listas de `tags` foram limpas, convertidas para minúsculas, deduplicadas e ordenadas em ordem alfabética. Os 163 comentários restantes já apresentavam tags perfeitamente ordenadas e em minúsculas na origem.
+
 Os logs registram:
 
 - início e término do processamento;

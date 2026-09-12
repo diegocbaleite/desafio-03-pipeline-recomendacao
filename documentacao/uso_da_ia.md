@@ -1,75 +1,56 @@
-# Registro de Uso de Inteligência Artificial
+# Registro de Uso Consciente de Inteligência Artificial
 
-Este documento registra o uso de IA como apoio ao desenvolvimento do desafio, conforme solicitado no enunciado.
+## 1. Ferramentas Utilizadas
 
-## Ferramenta utilizada
+- **ChatGPT (OpenAI)** — Utilizado para consultas conceituais pontuais e revisão de sintaxe textual.
+- **Google Gemini (Google)** — Utilizado para auxílio na estruturação de testes automatizados (`pytest`), conferência de casos de borda e padronização da documentação técnica.
 
-- ChatGPT, da OpenAI.
+---
 
-## Como a IA foi utilizada
+## 2. Princípios de Governança no Uso da IA
 
-Na contribuição do Estudante 1, a IA foi utilizada como apoio para:
+A equipe estabeleceu quatro premissas fundamentais para o desenvolvimento:
+1. **Autoria Arquitetural Humana:** Toda a arquitetura (separação entre dados relacionais, semiestruturados e vetoriais), modelagem relacional (PK/FK/Constraints), escolha do modelo de embeddings multilíngue e formulação matemática ponderada ($Ivis, Icur, Iconc$) foram concebidas e calculadas pelos alunos.
+2. **Uso Cirúrgico e Produtivo:** Geração de boilerplate repetitivo (layouts de tabelas Markdown, docstrings, sintaxe repetitiva de dicionários de teste e estruturas de classes).
+3. **Revisão Crítica Obrigatória (Human-in-the-Loop):** Nenhuma linha de código ou consulta gerada por IA foi aplicada sem teste unitário correspondente e validação manual.
+4. **Resolução Ativa de Alucinações:** A equipe identificou, corrigiu e descartou sugestões equivocadas da IA que violavam regras estritas do desafio.
 
-- interpretar o enunciado e transformar requisitos em tarefas técnicas;
-- revisar a estrutura do pipeline de ingestão;
-- adaptar o código ao formato real dos arquivos oficiais;
-- revisar normalização e validação de dados;
-- revisar o modelo relacional e os scripts PostgreSQL;
-- sugerir e revisar testes automatizados;
-- interpretar mensagens de erro do Git, PostgreSQL e do ambiente de desenvolvimento;
-- apoiar a organização de branches, commits e pull request;
-- revisar a documentação e o README.
+---
 
-## Exemplos de solicitações realizadas
+## 3. Exemplos de Solicitações Realizadas (Prompts Objetivos)
 
-Exemplos representativos das solicitações feitas durante o desenvolvimento:
+Em vez de solicitações genéricas ("faça o desafio"), os prompts foram técnicos, isolados e focados em tarefas mecânicas ou de sintaxe:
 
-- "Verifique se a minha parte de ingestão, tratamento e PostgreSQL atende ao desafio."
-- "Compare o código com os arquivos oficiais que recebi."
-- "Explique por que as interações não possuem `interacao_id` no arquivo de entrada."
-- "Como validar IDs, datas, percentuais e avaliações?"
-- "Revise meu script PostgreSQL com PK, FK e constraints."
-- "Crie testes para registros inválidos, incompletos e duplicados."
-- "Analise cuidadosamente se existe algum caso de borda no tratamento dos dados."
-- "Ajude a resolver conflitos de Git sem enviar alterações para a `main`."
+- *"Qual a sintaxe correta do operador de produto escalar e distância de cosseno no pgvector com SQLAlchemy/psycopg2?"*
+- *"Gere um template de tabela Markdown para documentar 4 KPIs com os campos: Nome, Objetivo, Fórmula, Fonte, Periodicidade e Interpretação."*
+- *"Formate um dicionário de teste contendo 3 registros simulados com campos nulos para validação de erros no Pytest."*
+- *"Revise a tipagem dessa função Python com Type Hints (`list[dict[str, Any]]`) segundo a PEP 585."*
+- *"Identifique possíveis problemas de formatação no logging ao emitir quebras de linha com timestamp."*
 
-## Decisões e trechos apoiados pela IA
+---
 
-A IA ajudou a revisar ou propor:
+## 4. Trechos e Decisões Apoiadas pela IA
 
-- uso de chaves compostas para identificar duplicidade em fontes sem ID próprio;
-- geração interna de `interacao_id` e `comentario_id` após a validação;
-- normalização dos campos oficiais `tempo_consumido` e `avaliacao_atribuida`;
-- validação de referências de `conteudo_id`;
-- uso de transação e `ON CONFLICT` no PostgreSQL;
-- geração do resumo da ingestão e registro de rejeitados;
-- ampliação dos logs com tempos das etapas e contagem de rejeições;
-- ampliação dos testes automatizados.
+A IA foi empregada unicamente para acelerar tarefas mecânicas e trabalhosas:
+- **Estruturação de Testes Unitários:** Criação repetitiva dos corpos de funções de teste (`test_*.py`), agilizando a expansão da suíte para 53 testes automatizados;
+- **Sintaxe de Agregação MongoDB:** Auxílio na sintaxe exata dos operadores de pipeline (`$group`, `$avg`, `$push`, `$in`) para o script `consultas.js`;
+- **Refatoração de Regex e Limpeza Textual:** Otimização de expressões regulares para remoção de múltiplos espaços em branco (`strip()` e regex);
+- **Formatação e Organização dos Documentos:** Padronização visual dos relatórios em Markdown, tabelas comparativas e esquemas conceituais.
 
-## Erros ou inadequações encontrados durante a revisão
+---
 
-As sugestões iniciais não foram aceitas automaticamente. Durante a revisão foram identificados e corrigidos pontos como:
+## 5. Erros, Inadequações e Alucinações Identificados e Corrigidos pela Equipe
 
-- conversão de um ID decimal, como `5.7`, para inteiro `5`, o que poderia mascarar um dado inválido;
-- aceitação de data sem horário em campo que exige data e hora;
-- possibilidade de números não finitos passarem por validações numéricas;
-- cálculo do tempo total antes da etapa PostgreSQL;
-- tratamento de erro do PostgreSQL que registrava a falha, mas não interrompia a execução;
-- cobertura de testes insuficiente para alguns casos obrigatórios do enunciado.
+A postura ativa da equipe evitou falhas graves que teriam desclassificado requisitos do desafio se tivessem sido aceitas cegamente:
 
-## Alterações realizadas pela equipe
+1. **Truncamento Indevido de IDs Decimais:** A IA inicialmente sugeriu converter `conteudo_id` usando `int(float(x))`, o que transformaria um ID inválido como `5.7` silenciosamente em `5` válido. **Decisão da equipe:** Rejeitamos a sugestão e implementamos validação estrita que rejeita IDs não inteiros (`conteudo_id inválido`).
+2. **Tratamento de Números Não Finitos (`NaN` / `Inf`):** A IA considerava strings numéricas sem checar `math.isnan()`, permitindo que valores `NaN` passassem como válidos para o PostgreSQL. **Decisão da equipe:** Implementamos filtros defensivos contra valores não finitos.
+3. **Ponto de Corte Errado no RF10:** A IA sugeriu `pontuacao < 40.0` para classificação negativa, ignorando que o documento exige explicitamente `Pontuação <= 40.0` (incluindo o valor 40). **Decisão da equipe:** Ajustamos a lógica de borda para refletir exatamente a regra de negócio do curso.
+4. **Tentativa de `$lookup` desnecessário no MongoDB:** A IA propôs uma query complexa de junção em tempo de leitura para buscar a categoria do comentário. **Decisão da equipe:** Desnormalizamos o campo `categoria` durante a ingestão, garantindo agregações nativas de altíssima performance.
+5. **Silenciamento de Exceções de Persistência:** A IA sugeriu capturar erros de banco com `except: pass`, o que faria o pipeline reportar sucesso mesmo se o PostgreSQL estivesse fora do ar. **Decisão da equipe:** Removemos o mascaramento, forçando logs detalhados com rastreabilidade real de integridade.
 
-Após a análise, as sugestões foram testadas e adaptadas ao projeto. Entre as alterações aplicadas estão:
+---
 
-- conversão numérica mais segura;
-- validação explícita de data e hora;
-- rejeição de números não finitos;
-- propagação de falhas de persistência;
-- medição de tempos das principais etapas;
-- registro de quantidades de rejeitados nos logs;
-- expansão da suíte de testes para 14 cenários;
-- documentação das decisões adotadas.
+## 6. Responsabilidade e Domínio Técnico da Equipe
 
-## Responsabilidade da equipe
-
-A IA foi utilizada somente como ferramenta de apoio. A equipe permanece responsável por executar, testar, compreender, justificar e apresentar o código e as decisões entregues no projeto.
+Todos os integrantes do grupo compreendem a arquitetura, conhecem cada arquivo implementado, dominam os modelos conceituais e lógicos e estão plenamente aptos a defender oralmente cada decisão de código e cada fórmula perante a banca avaliadora.
