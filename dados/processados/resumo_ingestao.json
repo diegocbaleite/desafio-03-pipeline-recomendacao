@@ -40,13 +40,13 @@
     }
   },
   "carregados_banco": {
-    "postgresql": 0,
+    "postgresql": 2158,
     "mongodb": 0
   },
   "tempos_etapas_segundos": {
-    "leitura": 0.0089,
-    "tratamento_validacao": 0.0551,
-    "gravacao_saidas": 0.1451
+    "leitura": 0.036,
+    "tratamento_validacao": 0.1177,
+    "gravacao_saidas": 0.0383
   },
-  "tempo_total_segundos": 0.2108
+  "tempo_total_segundos": 43.1563
 }
