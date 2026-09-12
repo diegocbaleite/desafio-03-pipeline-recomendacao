@@ -32,7 +32,7 @@ Em vez de solicitações genéricas ("faça o desafio"), os prompts foram técni
 ## 4. Trechos e Decisões Apoiadas pela IA
 
 A IA foi empregada unicamente para acelerar tarefas mecânicas e trabalhosas:
-- **Estruturação de Testes Unitários:** Criação repetitiva dos corpos de funções de teste (`test_*.py`), agilizando a expansão da suíte para 53 testes automatizados;
+- **Estruturação de Testes Unitários:** Criação repetitiva dos corpos de funções de teste (`test_*.py`), agilizando a expansão da suíte para 60 testes automatizados;
 - **Sintaxe de Agregação MongoDB:** Auxílio na sintaxe exata dos operadores de pipeline (`$group`, `$avg`, `$push`, `$in`) para o script `consultas.js`;
 - **Refatoração de Regex e Limpeza Textual:** Otimização de expressões regulares para remoção de múltiplos espaços em branco (`strip()` e regex);
 - **Formatação e Organização dos Documentos:** Padronização visual dos relatórios em Markdown, tabelas comparativas e esquemas conceituais.
