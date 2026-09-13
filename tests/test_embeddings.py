@@ -1,10 +1,12 @@
 """Testes unitários e de integração de Embeddings e Busca Semântica (RF08 e RF09)."""
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import numpy as np
 import pytest
 
+import src.recomendacao.embeddings as embeddings_mod
 from src.recomendacao.busca import demonstrar_consultas_semanticas, executar_busca_semantica
 from src.recomendacao.embeddings import (
     carregar_modelo_embedding,
@@ -67,6 +69,44 @@ def test_gerar_e_salvar_embeddings_arquivo_saida(
     assert np.linalg.norm(embeddings[1]) == pytest.approx(1.0, rel=1e-3)
 
 
+def test_reaproveita_embeddings_persistidos_sem_regenerar(
+    config_global: dict,
+    catalogo_exemplo: list[dict],
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    """RF08: reaproveita vetores válidos mesmo após reinício do processo Python."""
+    caminho_saida = tmp_path / "embeddings_existentes.json"
+    vetor_valido = [1.0] + [0.0] * 383
+    persistidos = {
+        str(int(item["conteudo_id"])): vetor_valido
+        for item in catalogo_exemplo
+    }
+    caminho_saida.write_text(json.dumps(persistidos), encoding="utf-8")
+
+    # Simula nova execução do Python: sem cache em memória, mas com JSON persistido.
+    monkeypatch.setattr(embeddings_mod, "_EMBEDDINGS_CACHE", None)
+
+    def _modelo_nao_deve_ser_carregado(*args, **kwargs):
+        raise AssertionError("O modelo não deve ser carregado quando todos os vetores já existem")
+
+    monkeypatch.setattr(
+        embeddings_mod,
+        "carregar_modelo_embedding",
+        _modelo_nao_deve_ser_carregado,
+    )
+
+    resultado = embeddings_mod.gerar_e_salvar_embeddings(
+        config_global,
+        catalogo=catalogo_exemplo,
+        caminho_saida=caminho_saida,
+    )
+
+    assert resultado["gerados"] == 0
+    assert resultado["reaproveitados"] == len(catalogo_exemplo)
+    assert resultado["processados"] == len(catalogo_exemplo)
+
+
 def test_executar_busca_semantica_em_memoria(config_global: dict):
     """Testa busca semântica em linguagem natural com cálculo de cosseno em memória."""
     consulta = "Quero aprender os fundamentos de banco de dados para inteligência artificial."
@@ -99,4 +139,3 @@ def test_demonstrar_consultas_semanticas_obrigatorias(config_global: dict):
     assert len(historico[0]["resultados"]) > 0
     assert len(historico[1]["resultados"]) > 0
     assert len(historico[2]["resultados"]) > 0
-

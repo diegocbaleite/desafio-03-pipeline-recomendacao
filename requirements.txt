@@ -1,4 +1,5 @@
 pandas
+numpy
 psycopg2-binary
 pymongo
 python-dotenv
