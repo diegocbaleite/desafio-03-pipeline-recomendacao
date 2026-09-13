@@ -25,7 +25,7 @@ Este documento apresenta a definição, modelagem matemática, fontes de dados e
 - **Nome:** Usuários Ativos no Período (Active Users)
 - **Objetivo:** Mensurar a quantidade de usuários únicos que realizaram pelo menos uma ação/interação na plataforma educacional durante o intervalo de tempo selecionado.
 - **Fórmula:**
-  $$\text{Usuários Ativos} = \text{COUNT}(\text{DISTINCT } \text{usuario\_id})$$
+  $$\text{Usuários Ativos} = \text{COUNT}(\text{DISTINCT}(\text{usuario}))$$
 - **Fonte dos Dados:**
   - Tabela: `interacoes`
   - Campos: `usuario_id`, `data_hora`
@@ -41,7 +41,7 @@ Este documento apresenta a definição, modelagem matemática, fontes de dados e
 - **Nome:** Volume de Visualizações por Categoria Temática
 - **Objetivo:** Mapear a evolução temporal do consumo e a atratividade inicial dos conteúdos segmentados por área de conhecimento.
 - **Fórmula:**
-  $$\text{Visualizações} = \sum [\text{tipo\_interacao} = \text{'visualização'}]$$
+  $$\text{Visualizações} = \sum [\text{tipo de interação} = \text{'visualização'}]$$
 - **Fonte dos Dados:**
   - View SQL: `vw_content_views_by_category`
   - Tabelas de Origem: `interacoes` $\bowtie$ `conteudos` $\bowtie$ `categorias`
@@ -102,7 +102,7 @@ Este documento apresenta a definição, modelagem matemática, fontes de dados e
 - **Objetivo:** Medir a assertividade do algoritmo de recomendação semântica ($Ivis$, $Icur$, $Iconc$), verificando se o estudante efetivamente consumiu um conteúdo que lhe foi sugerido após a data da recomendação.
 - **Fórmula:**
   $$\text{Taxa de Conversão (\%)} = \left( \frac{\sum \text{conversao}}{\text{Total de Recomendações Geradas}} \right) \times 100$$
-  Onde $\text{conversao} = 1$ se existir interação do usuário naquele conteúdo com $\text{data\_hora} > \text{data\_geracao}$.
+  Onde $\text{conversao} = 1$ se existir interação do usuário naquele conteúdo com `data_hora` > `data_geracao`.
 - **Fonte dos Dados:**
   - View SQL: `vw_recommendation_conversion`
   - Tabelas de Origem: `recomendacoes` $\bowtie$ `interacoes`

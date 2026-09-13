@@ -113,7 +113,7 @@ $$\text{Pontuação}(u, c) = \left( \frac{Ivis + Icur}{2} \right) \times 100 \ti
 Onde:
 1. **$Ivis$ (Índice de Visualizações — $0.0$ a $1.0$):**
    Calculado pela **Similaridade Vetorial Semântica via Embeddings Ponderados**. Constrói o perfil latente do usuário ($\vec{v}_{\text{perfil}}$ ou `user_embedding`) no espaço denso de 384 dimensões, onde cada conteúdo consumido é ponderado pela profundidade de engajamento:
-   $$w_i = 1.0 + \min\left(1.0, \frac{\text{percentual\_conclusao}}{100}\right) + (0.5 \text{ se concluído})$$
+   $$w_i = 1.0 + \min\left(1.0, \frac{\text{percentual de conclusão}}{100}\right) + (0.5 \text{ se concluído})$$
    $$\vec{v}_{\text{perfil}} = \frac{\sum w_i \cdot \vec{e}_i}{\|\sum w_i \cdot \vec{e}_i\|}$$
    O índice $Ivis$ é a similaridade cosseno normalizada do perfil contra o vetor do candidato $\vec{e}_c$:
    $$Ivis = \max\left(0.0, \min\left(1.0, \frac{\cos(\vec{v}_{\text{perfil}}, \vec{e}_c) + 1}{2}\right)\right)$$
