@@ -441,7 +441,7 @@ Caso a importação seja feita manualmente, utilize o valor real de `POSTGRES_PA
 
 A pasta `documentacao/` contém:
 
-- `modelo_dados.pdf` — modelo conceitual/lógico/relacional;
+- `modelo-dados.pdf` — modelo conceitual/lógico/relacional;
 - `arquitetura.pdf` — arquitetura do pipeline;
 - `especificacao_tecnica.md` — decisões e detalhes técnicos;
 - `kpis.md` — métricas, KPIs, fórmulas e perguntas de negócio;
